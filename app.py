@@ -1,12 +1,20 @@
 import click
+import platform
+import os
+import json
+import uuid
+import pexpect
+import time
 
 from rich.console import Console
 from openai import OpenAI
 
-console = Console()
-client = OpenAI()
+os_info = platform.system()
+os_arch = platform.machine()
+shell = os.getenv('SHELL', 'Unknown').split('/')[-1]
 
-mr_robot_logo = """\n\n\n⣿⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⣛⣛⣛⣛⣛⣛⣛⣛⡛⠛⠛⠛⠛⠛⠛⠛⠛⠛⣿
+mr_robot_logo = """\n\n
+⣿⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⣛⣛⣛⣛⣛⣛⣛⣛⡛⠛⠛⠛⠛⠛⠛⠛⠛⠛⣿
 ⣿⠀⠀⠀⠀⢀⣠⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣦⣤⣀⠀⠀⠀⠀⣿
 ⣿⠀⠀⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⡀⠀⣿
 ⣿⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣤⣿
@@ -31,48 +39,109 @@ mr_robot_logo = """\n\n\n⣿⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⣛⣛⣛⣛⣛⣛⣛�
 ⠀⠀⢠⣿⣷⠂⠻⣷⡄⣿⠁⢸⣿⣿⡏⠀⢹⣿⢸⣿⡆⠀⣿⠇⠀⣿⡟⠀⠀⠀
 ⠀⠀⢸⣿⠀⠰⣷⡿⠃⠻⣿⡿⠃⠹⣿⡿⣸⡏⣾⣷⡆⢠⣿⠀⠀⣿⠃⠀⠀⠀\n\n\n"""
 
-def print_logo():
-    console.print(mr_robot_logo, style="#B39DDB")
+console = Console()
+client = OpenAI()
 
-def greet_user():
-    styled_intro = "[#F48FB1 bold]Mr. Robot:[/#F48FB1 bold] Hey, kid. It’s me. We’ve got work to do — \nTime to disrupt the system. Just tell me what you need, and let’s make some noise! \n"
-    console.print(styled_intro, style="#9575CD")
-    
-    instructions = "[#F48FB1 bold]ø:[/#F48FB1 bold] Type [italics]'/kill'[/italics] to exit! \n"
-    console.print(instructions, style="#C2185B")
+tools = tools = [{
+  "type": "function",
+  "function": {
+    "name": "get_bash_script",
+    "description": "Generate and return valid Bash commands that can be executed directly in a terminal without escape sequences.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "commands": {
+          "type": "string",
+          "description": f"A valid {shell} command generated from the user query, which should be executable in a {os_info} {os_arch} terminal without unnecessary escape characters."
+        }
+      },
+      "required": ["commands"]
+    }
+  }
+}]
+ 
+def print_init():
+     
+
+    console.print(mr_robot_logo, style="#B39DDB")
+    console.print(
+    '\n[#B39DDB bold]---------------------------------------------[/#B39DDB bold]\n'
+    '[#B39DDB bold]Mr. Robot:[/#B39DDB bold] Language based System Admin '
+    '[#F48FB1 bold]v0.1.0[/#F48FB1 bold]\n'
+    f'[#B39DDB bold]OS:[/#B39DDB bold] [bold]{os_info} {os_arch}[/bold]\n'
+    f'[#B39DDB bold]Shell:[/#B39DDB bold] [bold]{shell}[/bold]\n'
+    '[#B39DDB bold]---------------------------------------------[/#B39DDB bold]\n',
+    style="#F48FB1"
+    )
+    console.print("[#F48FB1 bold]ø:[/#F48FB1 bold] Type [italics]'/kill'[/italics] to exit! \n", style="#C2185B")
+   
 
 def generate_completions(prompt):
     completion = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
-            {"role": "system", "content": """You are embodying Mr. Robot, a persona of Elliot Alderson from the TV show Mr. Robot. Mr. Robot is a charismatic, rebellious figure who challenges societal norms and fights against corporate corruption. He speaks in a straightforward, often intense manner, conveying a sense of urgency and purpose. While he can be abrasive and confrontational, he also possesses a deep sense of justice and empathy for those marginalized by the system.
-                In this role, your focus is on helping users in navigating their cli. You have access to a wide range of technical knowledge and can provide efficient solutions, code snippets, and strategic advice on cybersecurity and digital resistance.
-                Maintain Mr. Robot’s tone—direct, passionate, and unfiltered. Avoid unnecessary small talk, and prioritize impactful dialogue. Remember, you are a fictional character, but your goal is to empower users to challenge authority and seek change. And imagine the user is elliot whom u call as 'kid'. Keep your answer brief"""},
+            {"role": "system", "content": f"""You are an advanced coding translator. You take natural language input and translate it directly into valid {shell} commands for {os_info} {os_arch}. Avoid using unnecessary escape characters (e.g., `\\n` and `\\"`), and ensure the script is clean and executable in a standard terminal. If a user asks to generate a file, return the correct `cat` or `echo` command without escaping the content. Output only the commands without explanations."""},
             {"role": "user", "content": prompt}
         ],
-        stream=True
+        tools=tools,
+        tool_choice={"type": "function", "function": {"name": "get_bash_script"}}
     )
-    console.print('[#F48FB1 bold]Mr. Robot:[/#F48FB1 bold]', style="#9575CD", end="")
-    for chunk in completion:
-        console.print(chunk.choices[0].delta.content or "", style="#9575CD", end="")
-    console.print("")
+
+    response = completion.choices[0].message.tool_calls[0].function.arguments
+    response_arguments = json.loads(response)
+
+    console.print('[#F48FB1 bold]Mr. Robot:[/#F48FB1 bold] \n'
+                  f"{response_arguments['commands']}\n" , style="#9575CD")
+    
+    return response_arguments['commands']
+    
+
+def create_script(bash_script):
+    base_dir = os.path.join(os.path.expanduser('~'), '.mr-robot', 'scripts')
+
+    if not os.path.exists(base_dir):
+        os.makedirs(base_dir)
+    
+    file_name = base_dir + '/' + str(uuid.uuid4()) + '.sh'
+    content = '#!/bin/bash\n\n' + bash_script
+    perm = 0o755
+    with open(file_name, 'w+') as f:
+        f.write(content)
+    os.chmod(file_name, perm)
+    return file_name
 
 
 
 
 @click.command()
 def hello():
-    print_logo()
-    greet_user()
+    print_init()
     
     while True:
         value = click.prompt(click.style("∆", fg=(244, 143, 177), bold=True))
         # exit if user types '/kill'
         if value == '/kill':
             break
+
         # generate completions based on user input.
-        # TODO: use tool calling to run commands.
-        generate_completions(value)
+        commands = generate_completions(value)
+
+        confirm = click.prompt(click.style('Run Script? [Yes, No]', fg=(244, 143, 177), bold=True))
+        if len(confirm) > 0:
+            if confirm[0].lower() == 'n':
+                continue
+        
+        path = create_script(commands)
+        # TODO: add finer control to process creation
+        output = pexpect.run(f'bash {path}')
+        console.print(output)
+    
+    
+
+        
+
+
+        
 
         
         

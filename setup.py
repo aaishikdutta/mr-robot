@@ -8,6 +8,7 @@ setup(
         'openai',
         'click',
         'rich',
+        'pexpect'
     ],
     entry_points={
         'console_scripts': [
