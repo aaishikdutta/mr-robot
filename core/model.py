@@ -2,8 +2,8 @@ import json
 import os
 import pexpect
 import platform
-import uuid
 
+from misc.util import create_execution_script
 from openai import OpenAI
 
 shell = os.getenv('SHELL', 'Unknown')
@@ -14,7 +14,7 @@ os_arch = platform.machine()
 class Model:
 
     def __init__(self, model, api_key=None ):
-        
+
         if not api_key:
             raise ValueError("Openai API key not found! Please add the API key either by setting the 'OPENAI_API_KEY' environment variable or by passing the api-key using the '--api-key' option while calling mr-robot")
         
@@ -64,28 +64,14 @@ class Model:
 
         return response_arguments
     
-    def create_script(self, base_dir, commands):
-
-        if not os.path.exists(base_dir):
-            os.makedirs(base_dir)
-
-        if not commands:
-            return None
-        
-        file_name = base_dir + '/' + str(uuid.uuid4()) + '.sh'
-        content = f'#!{shell}\n\n' + commands
-        perm = 0o755
-        with open(file_name, 'w+') as f:
-            f.write(content)
-        os.chmod(file_name, perm)
-        return file_name
-    
     def execute_commands(self, base_dir, **arguments):
 
         if self.tool_key not in arguments:
             raise ValueError(f"Missing required argument: {self.tool_key}")
-        
-        script_path = self.create_script(base_dir, arguments[self.tool_key])
+
+        commands = arguments[self.tool_key]
+        content = f'#!{shell}\n\n' + commands
+        script_path = create_execution_script(base_dir, content)
         
         if not script_path:
             return None
