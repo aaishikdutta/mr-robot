@@ -38,21 +38,60 @@ Mr. Robot is a tiny command-line interface (CLI) application that utilizes OpenA
    ```
 
 ## CLI Options
+
 Mr. Robot CLI supports several command-line options to customize its behavior:
-CopyUsage: mr-robot [OPTIONS]
+
+```
+Usage: mr-robot [OPTIONS]
 
 Options:
-  -a, --api-key TEXT              API key for openai API. If not added will
+  -a, --api-key TEXT              API key for OpenAI API. If not added, will
                                   look for env variable 'OPENAI_API_KEY'
   -d, --script-dir TEXT           Specify the directory to store the generated
                                   scripts  [default: /home/pi/.mr-robot]
-  -m, --model-name TEXT           openai model name.  [default: gpt-4o-mini]
-  -o, --os TEXT                   name of the target os that would run the
+  -m, --model-name TEXT           OpenAI model name  [default: gpt-4o-mini]
+  -o, --os TEXT                   Name of the target OS that would run the
                                   commands
   -p, --permission-mode [all|none|sudo]
-  -s, --shell TEXT                name of the target shell that would execute
+                                  Set the permission mode for command execution
+  -s, --shell TEXT                Name of the target shell that would execute
                                   the commands
-  --version                       Show the version and exit.
-  --help                          Show this message and exit.
+  --version                       Show the version and exit
+  --help                          Show this message and exit
+```
+
+Examples:
+
+1. Use Mr. Robot with a specific API key:
+   ```
+   mr-robot -a "your-api-key-here"
+   ```
+
+2. Specify a custom directory for generated scripts:
+   ```
+   mr-robot -d "/path/to/custom/directory"
+   ```
+
+3. Use a different OpenAI model:
+   ```
+   mr-robot -m "gpt-3.5-turbo"
+   ```
+
+4. Specify the target operating system:
+   ```
+   mr-robot -o "ubuntu"
+   ```
+
+5. Set a specific permission mode:
+   ```
+   mr-robot -p sudo
+   ```
+
+6. Specify the target shell:
+   ```
+   mr-robot -s "bash"
+   ```
+
+
 
 
