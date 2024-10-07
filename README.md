@@ -13,7 +13,7 @@ Mr. Robot is a tiny command-line interface (CLI) application that utilizes OpenA
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/mr-robot.git
+   git clone https://github.com/aaishikdutta/mr-robot.git
    ```
 
 2. Create a new environment (using conda):
