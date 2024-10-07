@@ -55,8 +55,6 @@ class Model:
             parallel_tool_calls=False
         )
 
-        print(completions.choices[0].message)
-
         response = completions.choices[0].message
 
         # handle case where model won't use tool call
