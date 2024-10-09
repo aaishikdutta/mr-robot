@@ -1,6 +1,6 @@
 import json, subprocess
 
-from misc.util import create_execution_script
+from mr_robot.misc.util import create_execution_script
 from openai import OpenAI
 
 class Model:

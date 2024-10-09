@@ -4,7 +4,6 @@ setup(
     name='mr-robot',
     packages=find_packages(),
     version='0.2.0',
-    py_modules=['app'],
     install_requires=[
         'openai',
         'click',
@@ -12,7 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'mr-robot = app:cli',
+            'mr-robot = mr_robot.app:cli',
         ],
     },
 )

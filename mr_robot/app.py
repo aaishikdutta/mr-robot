@@ -1,16 +1,15 @@
 import click
 import platform
 import os
-import readline
 
 from importlib.metadata import version
 
 from rich.console import Console
 
-from misc.util import get_default_system_prompt, get_default_base_directory, remove_execution_scripts, get_commands_help
-from misc.constants import ASCII_LOGO
+from .misc.util import get_default_system_prompt, get_default_base_directory, remove_execution_scripts, get_commands_help
+from .misc.constants import ASCII_LOGO
 
-from core.model import Model
+from .core.model import Model
 
 
 os_info = platform.system()
