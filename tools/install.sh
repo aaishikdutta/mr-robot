@@ -20,7 +20,6 @@ then
 fi
 
 # Clone the repository
-info "Cloning the repository..."
 git clone https://github.com/aaishikdutta/mr-robot.git || error "Failed to clone the repository."
 
 cd mr-robot || error "Failed to change directory to mr-robot."
@@ -36,5 +35,18 @@ info "Installing required libraries..."
 pip install -e . || error "Failed to install required libraries."
 
 read -p "Please enter your OpenAI API Key: " OPENAI_API_KEY
+export OPENAI_API_KEY
+
+# Inform the user about the environment variable
+info "The OpenAI API Key has been set as an environment variable."
+
+# Disclaimer about the API key
+info "Disclaimer: The OpenAI API Key is now set as an environment variable. Please note that this variable is ephemeral and attached to the current session. If you close this terminal or start a new session, you will need to set the API key again."
+
+info "To persist the OpenAI API Key across sessions, add the following line to your shell configuration file (e.g., .bashrc, .bash_profile, or .zshrc):"
+info "export OPENAI_API_KEY='your_api_key_here'"
+
+# Run the main program
+info "Running the mr-robot tool..."
 
 mr-robot
