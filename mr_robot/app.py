@@ -6,10 +6,10 @@ from importlib.metadata import version
 
 from rich.console import Console
 
-from .misc.util import get_default_system_prompt, get_default_base_directory, remove_execution_scripts, get_commands_help
-from .misc.constants import ASCII_LOGO
+from mr_robot.misc.util import get_default_system_prompt, get_default_base_directory, remove_execution_scripts, get_commands_help
+from mr_robot.misc.constants import ASCII_LOGO
 
-from .core.model import Model
+from mr_robot.core.model import Model
 
 
 os_info = platform.system()
