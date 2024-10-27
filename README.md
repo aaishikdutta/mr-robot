@@ -91,7 +91,15 @@ Examples:
    ```
    mr-robot -s "bash"
    ```
+## COPILOT MODE
 
+mr-robot also supports copilot mode with zsh shell. To use copilot just run the following command:
+```
+zsh -c "$(curl -fsSL https://raw.githubusercontent.com/aaishikdutta/mr-robot/main/tools/install.zsh)"
+```
+This will install the zsh widget to your shell. Restart or source your .zshrc file for changes to take effect.
+Also dont forget to add openai key to your environment. 
+Then type your query directly into your shell and tyle CTRL + k to ask copilot.
 
 
 
