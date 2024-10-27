@@ -35,18 +35,6 @@ source venv/bin/activate || error "Failed to activate the virtual environment."
 info "Installing required libraries..."
 pip install -e . || error "Failed to install required libraries."
 
-read -p "Please enter your OpenAI API Key: " OPENAI_API_KEY
-export OPENAI_API_KEY
-
-# Inform the user about the environment variable
-info "The OpenAI API Key has been set as an environment variable."
-
-# Disclaimer about the API key
-info "Disclaimer: The OpenAI API Key is now set as an environment variable. Please note that this variable is ephemeral and attached to the current session. If you close this terminal or start a new session, you will need to set the API key again."
-
-info "To persist the OpenAI API Key across sessions, add the following line to your shell configuration file (e.g., .bashrc, .bash_profile, or .zshrc):"
-info "export OPENAI_API_KEY='your_api_key_here'"
-
 # Source the copilot script for the current session
 info "Adding the copilot widget for the current session..."
 
@@ -55,7 +43,6 @@ then
     error "The copilot widget requires Zsh and couldn't be installed." >&2
 else
     zsh -c tools/copilot.zsh || error "Failed to load the copilot widget script."
-    info "The copilot widget has been added to this Zsh session. Now you can use CTRL + K to convert natural language command queries into executable shell commands."
     
     # Add the Zsh widget to .zshrc if not already present
     ZSHRC="$HOME/.zshrc"
@@ -68,5 +55,8 @@ else
         info "Zsh widget is already set up in .zshrc."
     fi
 fi
+info "The copilot widget has been added to this Zsh session. Now you can use CTRL + K to convert natural language command queries into executable shell commands."
+info "Please add the OPENAI API key by setting the 'OPENAI_API_KEY' environment variable"
+
 
 info "Setup complete!"
