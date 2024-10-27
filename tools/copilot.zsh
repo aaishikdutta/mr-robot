@@ -11,7 +11,7 @@ function ask_copilot() {
     
     POSTDISPLAY=$'\nasking copilot..'
     {
-        response=$($VENV_PYTHON $SCRIPT_PATH $BUFFER)
+        response=$($VENV_PYTHON $SCRIPT_PATH 2>&1 $BUFFER)
         if [ $? -ne 0 ]
         then   
             echo "[FAIL]: $response" >  $POSTDISPLAY_FILE

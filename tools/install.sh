@@ -46,7 +46,5 @@ info "Disclaimer: The OpenAI API Key is now set as an environment variable. Plea
 info "To persist the OpenAI API Key across sessions, add the following line to your shell configuration file (e.g., .bashrc, .bash_profile, or .zshrc):"
 info "export OPENAI_API_KEY='your_api_key_here'"
 
-# Run the main program
-info "Running the mr-robot tool..."
-
-mr-robot
+# source the copilot script
+source tools/copilot.zsh
