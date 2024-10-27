@@ -20,6 +20,7 @@ then
 fi
 
 # Clone the repository
+info "Cloning the repository..."
 git clone https://github.com/aaishikdutta/mr-robot.git || error "Failed to clone the repository."
 
 cd mr-robot || error "Failed to change directory to mr-robot."
@@ -46,15 +47,26 @@ info "Disclaimer: The OpenAI API Key is now set as an environment variable. Plea
 info "To persist the OpenAI API Key across sessions, add the following line to your shell configuration file (e.g., .bashrc, .bash_profile, or .zshrc):"
 info "export OPENAI_API_KEY='your_api_key_here'"
 
-# source the copilot script
-info "Adding the copilot widget"
+# Source the copilot script for the current session
+info "Adding the copilot widget for the current session..."
 
 if [ -z "$ZSH_VERSION" ]
 then
-  error "The copilot widget requires Zsh and couldnt be installed." >&2
+    error "The copilot widget requires Zsh and couldn't be installed." >&2
 else
-  zsh -c tools/copilot.zsh
-  info "The copilot widget has been added to this zsh session. Now you can use CTRL + k to convert natural language command queries into executable shell commands."
+    zsh -c tools/copilot.zsh || error "Failed to load the copilot widget script."
+    info "The copilot widget has been added to this Zsh session. Now you can use CTRL + K to convert natural language command queries into executable shell commands."
+    
+    # Add the Zsh widget to .zshrc if not already present
+    ZSHRC="$HOME/.zshrc"
+    WIDGET_CODE="source $(pwd)/tools/copilot.zsh"
+
+    if ! grep -q "$WIDGET_CODE" "$ZSHRC"; then
+        echo "$WIDGET_CODE" >> "$ZSHRC"
+        info "The copilot widget has been added to your .zshrc. Restart your terminal or run 'source ~/.zshrc' to use it across sessions."
+    else
+        info "Zsh widget is already set up in .zshrc."
+    fi
 fi
 
-
+info "Setup complete!"
