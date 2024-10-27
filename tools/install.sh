@@ -47,4 +47,14 @@ info "To persist the OpenAI API Key across sessions, add the following line to y
 info "export OPENAI_API_KEY='your_api_key_here'"
 
 # source the copilot script
-source tools/copilot.zsh
+info "Adding the copilot widget"
+
+if [ -z "$ZSH_VERSION" ]
+then
+  error "The copilot widget requires Zsh and couldnt be installed." >&2
+else
+  zsh -c tools/copilot.zsh
+  info "The copilot widget has been added to this zsh session. Now you can use CTRL + k to convert natural language command queries into executable shell commands."
+fi
+
+
